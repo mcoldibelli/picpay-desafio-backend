@@ -69,14 +69,6 @@ Aptidões para criar e manter aplicações de alta qualidade:
 - Noções de escalabilidade
 - Boas habilidades na aplicação do conhecimento do negócio no software
 - Implementação margeada por ferramentas de qualidade (análise estática, PHPMD, PHPStan, PHP-CS-Fixer etc)
-- Noções de PHP assíncrono
-
-
-## O que NÃO será avaliado :warning:
-
-- Fluxo de cadastro de usuários e lojistas
-- Frontend (só avaliaremos a (API Restful)[https://www.devmedia.com.br/rest-tutorial/28912])
-- Autenticação
 
 ## O que será um Diferencial
 
@@ -93,11 +85,3 @@ Aptidões para criar e manter aplicações de alta qualidade:
 - Cuidado com itens de segurança
 - Arquitetura (estruturar o pensamento antes de escrever)
 - Carinho em desacoplar componentes (outras camadas, service, repository)
-
-## Materiais úteis
-
-- https://hub.packtpub.com/why-we-need-design-patterns/
-- https://refactoring.guru/
-- https://www.atlassian.com/continuous-delivery/software-testing/types-of-software-testing
-- https://martinfowler.com/articles/microservices.htm
-- https://docs.guzzlephp.org/en/stable/request-options.html
