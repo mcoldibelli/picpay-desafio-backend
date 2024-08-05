@@ -10,11 +10,11 @@ namespace api.Controllers;
 [ApiController]
 public class UserController : ControllerBase
 {
-    private readonly UserRepository _userRepository;
+    private readonly IUserRepository _userRepository;
 
     public UserController(IUserRepository userRepository)
     {
-        _userRepository = (UserRepository?)userRepository;
+        _userRepository = userRepository;
     }
 
     [HttpGet]
