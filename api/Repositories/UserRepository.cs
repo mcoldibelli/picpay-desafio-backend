@@ -16,12 +16,12 @@ public class UserRepository : IUserRepository
 
     public async Task<List<User>> GetAllAsync()
     {
-        return await _dbContext.User.ToListAsync();
+        return await _dbContext.User.AsNoTracking().ToListAsync();
     }
 
     public async Task<User?> GetByIdAsync(int id)
     {
-        return await _dbContext.User.FirstOrDefaultAsync(u => u.Id == id);
+        return await _dbContext.User.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
     }
 
     public async Task<User> CreateAsync(User userModel)
