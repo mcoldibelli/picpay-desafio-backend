@@ -1,0 +1,35 @@
+﻿services:
+  api:
+    container_name: transactions-api
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    ports:
+      - 4652:8080
+    depends_on:
+      - api-db
+    networks:
+      picpay-challenge:
+
+  api-db:
+    container_name: transactions-api-db
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    user: root
+    ports:
+      - "1433:1433"
+    environment:
+      MSSQL_SA_PASSWORD: ${SA_PASSWORD}
+      ACCEPT_EULA: "Y"
+    volumes:
+      - "transactions-api-db:/var/opt/mssql"
+    networks:
+      picpay-challenge:
+        aliases:
+          - "sql"
+
+volumes:
+  transactions-api-db:
+
+networks:
+  picpay-challenge:
+    driver: bridge
