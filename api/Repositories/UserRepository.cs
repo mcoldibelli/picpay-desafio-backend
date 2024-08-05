@@ -1,4 +1,5 @@
 using api.Data;
+using api.Exceptions;
 using api.Interfaces;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
@@ -29,5 +30,20 @@ public class UserRepository : IUserRepository
         await _dbContext.User.AddAsync(userModel);
         await _dbContext.SaveChangesAsync();
         return userModel;
+    }
+
+    public async Task<User> UpdateAsync(User userModel)
+    {
+        var existingUser = await _dbContext.User.FindAsync(userModel.Id);
+
+        if (existingUser == null)
+        {
+            throw new UserNotfoundException();
+        }
+
+        _dbContext.Entry(existingUser).CurrentValues.SetValues(userModel);
+        await _dbContext.SaveChangesAsync();
+
+        return existingUser;
     }
 }
