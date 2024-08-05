@@ -9,32 +9,28 @@ namespace api.Controllers;
 [ApiController]
 public class UserController : ControllerBase
 {
-    private readonly IUserRepository _userRepository;
+    private readonly IUserService _userService;
 
-    public UserController(IUserRepository userRepository)
+    public UserController(IUserService userService)
     {
-        _userRepository = userRepository;
+        _userService = userService;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var users = await  _userRepository.GetAllAsync();
-
+        var users = await  _userService.GetAllAsync();
         var userDto = users.Select(u => u.ToUserDto());
-
         return Ok(userDto);
     }
 
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
-        var user = await _userRepository.GetByIdAsync(id);
-
+        var user = await _userService.GetByIdAsync(id);
         if (user == null)
             return NotFound();
-
-        return Ok(user);
+        return Ok(user.ToUserDto());
     }
 
     [HttpPost]
@@ -44,8 +40,8 @@ public class UserController : ControllerBase
             return BadRequest(ModelState);
 
         var userModel = userDTO.ToUserFromCreateDto();
-        await _userRepository.CreateAsync(userModel);
-        return CreatedAtAction(nameof(GetById), new { id = userModel.Id }, userModel.ToUserDto());
+        var createdUser = await _userService.CreateAsync(userModel);
+        return CreatedAtAction(nameof(GetById), new { id = createdUser.Id }, createdUser.ToUserDto());
     }
 
 }
