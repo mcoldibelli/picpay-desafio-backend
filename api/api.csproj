@@ -30,4 +30,13 @@
       </Content>
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update=".env">
+        <DependentUpon>.dockerignore</DependentUpon>
+      </None>
+      <None Update=".env.example">
+        <DependentUpon>.dockerignore</DependentUpon>
+      </None>
+    </ItemGroup>
+
 </Project>
