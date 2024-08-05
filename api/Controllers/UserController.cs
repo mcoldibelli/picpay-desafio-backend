@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers;
 
-[Route("api/user")]
+[Route("user")]
 [ApiController]
 public class UserController : ControllerBase
 {
