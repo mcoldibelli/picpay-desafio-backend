@@ -23,4 +23,11 @@ public class UserRepository : IUserRepository
     {
         return await _dbContext.User.FirstOrDefaultAsync(u => u.Id == id);
     }
+
+    public async Task<User> CreateAsync(User userModel)
+    {
+        await _dbContext.User.AddAsync(userModel);
+        await _dbContext.SaveChangesAsync();
+        return userModel;
+    }
 }

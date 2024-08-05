@@ -18,4 +18,17 @@ public static class UserMappers
             UserType = userModel.UserType
         };
     }
+
+    public static User ToUserFromCreateDto(this CreateUserRequestDto userModel)
+    {
+        return new User
+        {
+            FirstName = userModel.FirstName,
+            LastName = userModel.LastName,
+            Document = userModel.Document,
+            Email = userModel.Email,
+            Balance = userModel.Balance,
+            UserType = userModel.UserType
+        };
+    }
 }

@@ -1,7 +1,6 @@
-using api.Data;
+using api.Dtos.User;
 using api.Interfaces;
 using api.Mappers;
-using api.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers;
@@ -36,6 +35,17 @@ public class UserController : ControllerBase
             return NotFound();
 
         return Ok(user);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateUserRequestDto userDTO)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        var userModel = userDTO.ToUserFromCreateDto();
+        await _userRepository.CreateAsync(userModel);
+        return CreatedAtAction(nameof(GetById), new { id = userModel.Id }, userModel.ToUserDto());
     }
 
 }

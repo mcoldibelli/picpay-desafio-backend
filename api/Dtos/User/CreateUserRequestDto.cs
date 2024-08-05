@@ -1,15 +1,10 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using api.Models.Enums;
 
-namespace api.Models;
+namespace api.Dtos.User;
 
-[Table("Users")]
-public class User
+public class CreateUserRequestDto
 {
-    [Key]
-    public int Id { get; set; }
-
     [Required(ErrorMessage = "First name is required")]
     [StringLength(50, ErrorMessage = "First name cannot exceed 50 characters")]
     public string FirstName { get; set; } = string.Empty;
@@ -31,7 +26,7 @@ public class User
     [StringLength(100, MinimumLength = 12, ErrorMessage = "Password must be between 12 and 100 characters")]
     public string Password { get; set; } = string.Empty;
 
-    [Column(TypeName = "decimal(18,2)")]
+    [Range(0, double.MaxValue, ErrorMessage = "Balance must be a non-negative value")]
     public decimal Balance { get; set; }
 
     [Required(ErrorMessage = "User type is required")]
