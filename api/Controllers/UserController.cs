@@ -27,4 +27,15 @@ public class UserController : ControllerBase
         return Ok(userDto);
     }
 
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> GetById([FromRoute] int id)
+    {
+        var user = await _userRepository.GetByIdAsync(id);
+
+        if (user == null)
+            return NotFound();
+
+        return Ok(user);
+    }
+
 }
