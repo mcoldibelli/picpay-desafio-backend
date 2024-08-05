@@ -7,4 +7,5 @@ public interface IUserService
     Task<List<User>> GetAllAsync();
     Task<User?> GetByIdAsync(int id);
     Task<User> CreateAsync(User userModel);
+    void TransactionPolicy(User payer, decimal value);
 }
