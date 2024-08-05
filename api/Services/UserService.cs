@@ -1,3 +1,4 @@
+using api.Exceptions;
 using api.Interfaces;
 using api.Models;
 using api.Models.Enums;
@@ -27,18 +28,31 @@ public class UserService : IUserService
         return await _userRepository.CreateAsync(userModel);
     }
 
+    public async Task WithdrawalAsync(int id, decimal amount)
+    {
+        var user = await _userRepository.GetByIdAsync(id);
+
+        if (user.Balance < amount)
+        {
+            throw new InvalidOperationException("Insufficient funds.");
+        }
+
+        user.Balance -= amount;
+        await _userRepository.UpdateAsync(user);
+    }
+
+    public async Task DepositAsync(int id, decimal amount)
+    {
+        var user = await _userRepository.GetByIdAsync(id);
+        user.Balance += amount;
+        await _userRepository.UpdateAsync(user);    }
+
     public void TransactionPolicy(User payer, decimal value)
     {
         if (payer.UserType == UserType.Merchant)
         {
             throw new UnauthorizedAccessException(
                 "User of type MERCHANT is not allowed to perform fund transactions");
-        }
-
-        // TODO Create custom exception
-        if (payer.Balance.CompareTo(value) < 0)
-        {
-            throw new Exception("Insufficient funds");
         }
     }
 }
