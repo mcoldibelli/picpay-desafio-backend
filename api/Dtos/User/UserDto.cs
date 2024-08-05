@@ -10,4 +10,5 @@ public class UserDto
     public string Document { get; set; }
     public string Email { get; set; } = string.Empty;
     public decimal Balance { get; set; }
+    public UserType UserType { get; set; }
 }

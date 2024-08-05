@@ -35,5 +35,5 @@ public class User
     public decimal Balance { get; private set; }
 
     [Required(ErrorMessage = "User type is required")]
-    public UserType UserType;
+    public UserType UserType { get; set; }
 }

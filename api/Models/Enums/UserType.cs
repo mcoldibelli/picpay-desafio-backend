@@ -2,6 +2,6 @@ namespace api.Models.Enums;
 
 public enum UserType
 {
-    Common,
-    Merchant
+    Common = 0,
+    Merchant = 1
 }
