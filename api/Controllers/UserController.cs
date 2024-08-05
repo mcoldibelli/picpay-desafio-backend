@@ -1,0 +1,30 @@
+using api.Data;
+using api.Interfaces;
+using api.Mappers;
+using api.Repositories;
+using Microsoft.AspNetCore.Mvc;
+
+namespace api.Controllers;
+
+[Route("api/user")]
+[ApiController]
+public class UserController : ControllerBase
+{
+    private readonly UserRepository _userRepository;
+
+    public UserController(IUserRepository userRepository)
+    {
+        _userRepository = (UserRepository?)userRepository;
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        var users = await  _userRepository.GetAllAsync();
+
+        var userDto = users.Select(u => u.ToUserDto());
+
+        return Ok(userDto);
+    }
+
+}
