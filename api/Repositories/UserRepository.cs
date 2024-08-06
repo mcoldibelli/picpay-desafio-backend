@@ -27,6 +27,12 @@ public class UserRepository : IUserRepository
 
     public async Task<User> CreateAsync(User userModel)
     {
+        if (await _dbContext.User
+                .AnyAsync(u => u.Email == userModel.Email || u.Document == userModel.Document))
+        {
+            throw new InvalidOperationException("Email or Document already exists");
+        }
+
         await _dbContext.User.AddAsync(userModel);
         await _dbContext.SaveChangesAsync();
         return userModel;
