@@ -34,13 +34,14 @@ public class UserController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateUserRequestDto userDTO)
+    public async Task<IActionResult> Create([FromBody] CreateUserRequestDto userDto)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var userModel = userDTO.ToUserFromCreateDto();
+        var userModel = userDto.ToUserFromCreateDto();
         var createdUser = await _userService.CreateAsync(userModel);
+
         return CreatedAtAction(nameof(GetById), new { id = createdUser.Id }, createdUser.ToUserDto());
     }
 

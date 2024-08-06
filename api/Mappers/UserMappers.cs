@@ -28,6 +28,7 @@ public static class UserMappers
             Document = userModel.Document,
             Email = userModel.Email,
             Balance = userModel.Balance,
+            Password = userModel.Password,
             UserType = userModel.UserType
         };
     }
