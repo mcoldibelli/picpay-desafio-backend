@@ -24,6 +24,7 @@ public class TransferService : ITransferService
         _authorizationService = authorizationService;
     }
 
+    // TODO Refactor, too big
     public async Task<Transfer> CreateAsync(Transfer transferModel)
     {
         await using var transaction = await _dbContext.Database.BeginTransactionAsync();
@@ -40,8 +41,8 @@ public class TransferService : ITransferService
 
             _userService.TransactionPolicy(payer, transferModel.Value);
 
+            // TODO Rethrowing when false?
             var isAuthorized = await _authorizationService.GetAuthorizationAsync();
-
             if (!isAuthorized)
             {
                 throw new UnauthorizedAccessException("API authorization failed.");
