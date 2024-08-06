@@ -1,6 +1,8 @@
+using api.Data;
 using api.Exceptions;
 using api.Interfaces;
 using api.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
 
@@ -8,32 +10,50 @@ public class TransferService : ITransferService
 {
     private readonly ITransferRepository _transferRepository;
     private readonly IUserService _userService;
+    private readonly ApplicationDbContext _dbContext;
 
-    public TransferService(ITransferRepository transferRepository, IUserService userService)
+    public TransferService(ITransferRepository transferRepository, IUserService userService, ApplicationDbContext dbContext)
     {
         _transferRepository = transferRepository;
         _userService = userService;
+        _dbContext = dbContext;
     }
 
     public async Task<Transfer> CreateAsync(Transfer transferModel)
     {
-        var payer = await _userService.GetByIdAsync(transferModel.PayerId);
-        var payee = await _userService.GetByIdAsync(transferModel.PayeeId);
+        await using var transaction = await _dbContext.Database.BeginTransactionAsync();
 
-        if (payer == null || payee == null)
+        try
         {
-            throw new UserNotfoundException();
+            var payer = await _userService.GetByIdAsync(transferModel.PayerId);
+            var payee = await _userService.GetByIdAsync(transferModel.PayeeId);
+
+            if (payer == null || payee == null)
+            {
+                throw new UserNotfoundException();
+            }
+
+            _userService.TransactionPolicy(payer, transferModel.Value);
+
+            // TODO API authentication (GET)
+            //  https://util.devi.tools/api/v2/authorize
+
+            await _userService.WithdrawalAsync(payer.Id, transferModel.Value);
+            await _userService.DepositAsync(payee.Id, transferModel.Value);
+
+            // TODO API Notification (POST)
+            // https://util.devi.tools/api/v1/notify)
+
+            await _transferRepository.CreateAsync(transferModel);
+
+            await transaction.CommitAsync();
+
+            return transferModel;
         }
-
-        _userService.TransactionPolicy(payer, transferModel.Value);
-
-        // TODO API authentication
-
-        // TODO rollback transaction
-        await _userService.WithdrawalAsync(payer.Id, transferModel.Value);
-        await _userService.DepositAsync(payee.Id, transferModel.Value);
-
-        // TODO API Notification
-        return await _transferRepository.CreateAsync(transferModel);
+        catch (Exception e)
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
     }
 }
