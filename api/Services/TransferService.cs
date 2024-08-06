@@ -2,7 +2,6 @@ using api.Data;
 using api.Exceptions;
 using api.Interfaces;
 using api.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
 
@@ -11,12 +10,18 @@ public class TransferService : ITransferService
     private readonly ITransferRepository _transferRepository;
     private readonly IUserService _userService;
     private readonly ApplicationDbContext _dbContext;
+    private readonly IAuthorizationService _authorizationService;
 
-    public TransferService(ITransferRepository transferRepository, IUserService userService, ApplicationDbContext dbContext)
+    public TransferService(
+        ITransferRepository transferRepository,
+        IUserService userService,
+        ApplicationDbContext dbContext,
+        IAuthorizationService authorizationService)
     {
         _transferRepository = transferRepository;
         _userService = userService;
         _dbContext = dbContext;
+        _authorizationService = authorizationService;
     }
 
     public async Task<Transfer> CreateAsync(Transfer transferModel)
@@ -35,8 +40,12 @@ public class TransferService : ITransferService
 
             _userService.TransactionPolicy(payer, transferModel.Value);
 
-            // TODO API authentication (GET)
-            //  https://util.devi.tools/api/v2/authorize
+            var isAuthorized = await _authorizationService.GetAuthorizationAsync();
+
+            if (!isAuthorized)
+            {
+                throw new UnauthorizedAccessException("API authorization failed.");
+            }
 
             await _userService.WithdrawalAsync(payer.Id, transferModel.Value);
             await _userService.DepositAsync(payee.Id, transferModel.Value);
